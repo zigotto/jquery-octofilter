@@ -1,0 +1,10 @@
+{
+  "name": "jquery-octo-filter",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "qunit": "~1.12.0",
+    "jquery": "~2.0.3",
+    "bootstrap": "~3.0.0"
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+
+  <meta charset="UTF-8">
+  <title>jQuery Octo Filter</title>
+
+  <!-- Plugin CSS -->
+  <link rel="stylesheet" href="../assets/jquery.octo.filter.css">
+
+  <!-- Demo CSS -->
+  <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+</head>
+<body>
+
+  <div class="container">
+    <h1>jQuery Octo Filter</h1>
+    <p>A jQuery plugin.<br>For more informations, visit our <a href="https://github.com/zigotto/jquery-octo-filter">repository</a>.</p>
+
+    <form action="#">
+      <input type="text" id="input" placeholder="Type to search...">
+    </form>
+  </div>
+
+  <script src="../bower_components/jquery/jquery.min.js"></script>
+  <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="../src/jquery.octo.filter.js"></script>
+
+  <script>
+    $('#input').octofilter({
+      url: 'data.json'
+    });
+  </script>
+
+</body>
+</html>
