@@ -2,63 +2,50 @@
 @import "compass/css3/box-shadow"
 @import "compass/typography/text/replacement"
 
-.filter-input
+.octofilter-input
+  border: 1px solid #777
   +border-radius(3px)
-  border: 1px solid #a3a3a3
-  padding: 10px
+  padding: 7px 10px 10px
   position: relative
   input
-    +box-shadow(none)
-    vertical-align: 0
     border: none
-    margin: 3px 0 0
-    padding: 7px 0
-  .filter-label
+    margin: 3px 3px 0
+    padding: 7px
+  .octofilter-label
     color: #fff
-    font-weight: 600
     margin: 3px 3px 0 0
     padding: 7px
     display: inline-block
     background: #93d9f3
-    .filter-clear
+    .octofilter-clear
       color: #fff
       cursor: pointer
       margin-left: 6px
 
-.filter-container
-  background: #fff
-  border: 1px solid #a3a3a3
-  width: 100%
-  margin: 10px 0 0
-  padding: 2px
-  display: none
-  position: absolute
-  left: 0
-  z-index: 2
-  .nav-tabs
-    background: #f3fbfe
-    margin: 0
-    li.active
-      a, a:hover
-        border: none
-    a
-      color: #2bb3e7
-      background: none
-      border: none
-  .tab-content
-    padding: 10px
-    .filter-not-found
-      color: #c3c3c3
-    a
-      +border-radius(2px)
-      color: #2bb3e7
-      cursor: pointer
-      margin: 2px
-      padding: 2px 5px
-      display: inline-block
-      &.filter-active
-        color: #fff
-        background: #2bb3e7
-      &.filtered
+  .octofilter-container
+    background: #fff
+    border: 1px solid #a3a3a3
+    width: 100%
+    margin: 10px 0 0
+    padding: 2px
+    display: none
+    position: absolute
+    left: 0
+    z-index: 2
+    .tab-content
+      padding: 10px
+      .octofilter-not-found
         color: #c3c3c3
-        background: none
+      a
+        +border-radius(2px)
+        color: #2bb3e7
+        cursor: pointer
+        margin: 2px
+        padding: 2px 5px
+        display: inline-block
+        &.octofilter-active
+          color: #fff
+          background: #2bb3e7
+        &.octofiltered
+          color: #c3c3c3
+          background: none

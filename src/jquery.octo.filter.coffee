@@ -15,38 +15,38 @@ class OctoFilter
   cacheData: {}
   selectedFilters: {}
   inputContainer: null
-  filterContainer: null
+  filtersContainer: null
 
   init: ->
     self = @
 
-    @inputContainer = $('<div/>', { class: 'filter-input' }).insertAfter(@input)
+    @inputContainer = $('<div/>', { class: 'octofilter-input' }).insertAfter(@input)
     @inputContainer.html(@input)
 
     # Faz a busca inicial e atribui evento ao clique dos filtros
     #
     @search '', ->
       # Ao filtrar no clique do filtro
-      self.filterContainer
-        .on 'click', '.filter-link', (event) ->
+      self.filtersContainer
+        .on 'click', '.octofilter-link', (event) ->
           event.preventDefault()
           event.stopPropagation()
           self.select $(@).data('value')
 
       # Ao remove o filtro
       self.inputContainer
-        .on 'click', '.filter-clear', (event) ->
+        .on 'click', '.octofilter-clear', (event) ->
           event.preventDefault()
           event.stopPropagation()
-          self.clear $(@).closest('.filter-label').data('value')
+          self.clear $(@).closest('.octofilter-label').data('value')
 
       # Ao clicar em um área diferente da área do filtro esconde o filtro
       $(document).on 'click', (event) ->
         target  = $(event.target)
         parents = target.parents().add(target)
 
-        if parents.index(self.inputContainer) == -1 and parents.index(self.filterContainer) == -1
-          self.filterContainer.hide()
+        if parents.index(self.inputContainer) == -1 and parents.index(self.filtersContainer) == -1
+          self.filtersContainer.hide()
 
     # Ao clicar no input container dá foco ao input
     #
@@ -57,24 +57,24 @@ class OctoFilter
       # Quando o input está em foco os filtros se tornam visíveis
       #
       .on 'focus', ->
-        self.filterContainer.show()
+        self.filtersContainer.show()
 
       .on 'keydown', ->
         switch event.keyCode or event.which
           # Caso pressione enter não dispara o comportamento padrão
           when 9 then return false
           # Caso pressione backspace e não tenha nada digitado no input remove o último filtro selecionado caso exista
-          when 8 then self.clear self.inputContainer.find('.filter-label:last').data('value') unless @value.length
+          when 8 then self.clear self.inputContainer.find('.octofilter-label:last').data('value') unless @value.length
           # Quando aperta o ESC
           when 27
             self.input.val('').blur()
-            self.filterContainer.hide()
+            self.filtersContainer.hide()
 
       .on 'keyup', (event) ->
         switch event.keyCode or event.which
           when 9, 13 # enter e tab
             event.preventDefault()
-            filter = self.filterContainer.find('.filter-link.filter-active:first') # Busca o primeiro filtro ativo
+            filter = self.filtersContainer.find('.octofilter-link.octofilter-active:first') # Busca o primeiro filtro ativo
             self.select filter.data('value') if filter.length
           else
             if @value.length >= self.options.minChars
@@ -85,19 +85,17 @@ class OctoFilter
   # Cria a estrutura html para receber os filtros
   #
   makeFilterContainer: ->
-    @filterContainer = $('
-      <div class="filter-container">
+    @filtersContainer = $('
+      <div class="octofilter-container">
         <ul class="nav nav-tabs"></ul>
         <div class="tab-content"></div>
       </div>
-    ').insertAfter(@input)
+    ').insertAfter(@input) unless @filtersContainer
 
-    containerNav = []
+    containerNav = for category, categoryLabel of @options.categories
+      $('<li/>').html $('<a/>', { href: "#octofilter-#{category}", text: categoryLabel, class: "nav-#{category}", 'data-toggle': 'tab' })
 
-    for category, categoryLabel of @options.categories
-      containerNav.push $('<li/>').html $('<a/>', { href: "#filter-#{category}", text: categoryLabel, class: "nav-#{category}", 'data-toggle': 'tab' })
-
-    @filterContainer
+    @filtersContainer
       .find('.nav').html(containerNav)
       .find('li:first').addClass('active')
 
@@ -106,40 +104,38 @@ class OctoFilter
   populateFilterContainer: (data) ->
     self = @
 
-    containerContent = []
-
     if $.isEmptyObject(@options.categories)
       $.each data, (key, value) -> self.options.categories[key] = key
       @makeFilterContainer()
 
-    for category, categoryLabel of @options.categories
+    containerContent = for category, categoryLabel of @options.categories
       content = []
       data[category] = $.parseJSON(data[category]) if typeof data[category] == 'string'
 
       if data[category].length
         for item in data[category]
-          klass = 'filter-link'
-          klass += ' filtered' if $.inArray(item.value or item.name, @selectedFilters[category]) != -1
+          klass = 'octofilter-link'
+          klass += ' octofiltered' if $.inArray(item.value or item.name, @selectedFilters[category]) != -1
           content.push $('<a/>', { text: item.name, class: klass, 'data-category': category, 'data-value': item.value or item.name })
       else
-        content.push $('<span/>', { text: "Nenhum #{@options.categories[category].toLowerCase()} encontrado.", class: "filter-not-found" })
+        content.push $('<span/>', { text: "#{@options.categories[category].toLowerCase()} not found.", class: "octofilter-not-found" })
 
-      containerContent.push $('<div/>', { id: "filter-#{category}", class: 'tab-pane' }).html(content)
+      $('<div/>', { id: "octofilter-#{category}", class: 'tab-pane' }).html(content)
 
-    @filterContainer.find('.tab-content').html(containerContent)
+    @filtersContainer.find('.tab-content').html(containerContent)
 
-    firstFilter = @filterContainer.find('.filter-link:not(.filtered):first') # Seta o primeiro filtro que não já esteja filtrado
+    firstFilter = @filtersContainer.find('.octofilter-link:not(.octofiltered):first') # Seta o primeiro filtro que não já esteja filtrado
 
     # Seta a aba ativa
     tabActive = if firstFilter.length
       firstFilter.closest('.tab-pane').addClass('active')
     else
-      @filterContainer.find('.tab-pane:first').addClass('active')
+      @filtersContainer.find('.tab-pane:first').addClass('active')
 
-    @filterContainer.find("[href='##{tabActive.attr('id')}']").tab('show')
+    @filtersContainer.find("[href='##{tabActive.attr('id')}']").tab('show')
 
     # Seta o link ativo
-    firstFilter.addClass('filter-active') if @input.val().length >= @options.minChars
+    firstFilter.addClass('octofilter-active') if @input.val().length >= @options.minChars
 
   # Faz a busca dos filtros
   #
@@ -155,9 +151,9 @@ class OctoFilter
       params[@options.paramName] = query
 
       $.getJSON @options.url, params, (data) ->
-        self.cacheData[query] = data # Armazena a consulta no cache
+        self.cacheData[query] = data # stores the query in cache
 
-        self.makeFilterContainer() unless self.filterContainer
+        self.makeFilterContainer() unless self.filtersContainer
         self.populateFilterContainer(data)
 
         # Callbacks
@@ -167,7 +163,7 @@ class OctoFilter
   # Seleciona e cria a tag
   #
   select: (value) ->
-    filter = @filterContainer.find(".filter-link[data-value='#{value}']")
+    filter = @filtersContainer.find(".octofilter-link[data-value='#{value}']")
     category = filter.data('category')
 
     # Retorna falso caso o filtro já esteja selecionado
@@ -178,10 +174,10 @@ class OctoFilter
     @selectedFilters[category] ?= []
     @selectedFilters[category].push(value) # Armazena o valor como selecionado
 
-    filterLabel = $('<span/>', { class: 'filter-label', text: filter.text(), 'data-value': value, 'data-category': category })
-    $('<a/>', { class: 'filter-clear', html: '&times;' }).appendTo(filterLabel)
+    filterLabel = $('<span/>', { class: 'octofilter-label', text: filter.text(), 'data-value': value, 'data-category': category })
+    $('<a/>', { class: 'octofilter-clear', html: '&times;' }).appendTo(filterLabel)
 
-    filtersLabels = @inputContainer.find('.filter-label')
+    filtersLabels = @inputContainer.find('.octofilter-label')
 
     # Caso tenha algum filtro selecionado ele é inserido após esse filtro
     # Caso não tenha ele é criado antes do input
@@ -200,11 +196,11 @@ class OctoFilter
   #
   clear: (value) ->
     unless value
-      @inputContainer.find(".filter-label").remove()
+      @inputContainer.find(".octofilter-label").remove()
       @selectedFilters = {}
       @input.val('')
     else
-      filterLabel = @inputContainer.find(".filter-label[data-value='#{value}']").remove()
+      filterLabel = @inputContainer.find(".octofilter-label[data-value='#{value}']").remove()
       category = filterLabel.data('category')
       @selectedFilters[category].splice(@selectedFilters[category].indexOf(value), 1) # Remove dos filtros selecionados
 
@@ -216,10 +212,10 @@ $.fn.extend
   octofilter: (options, args...) ->
     @each ->
       $this = $(this)
-      data = $this.data('categoryFilter')
+      data = $this.data('octofilter')
 
       if !data
-        $this.data 'categoryFilter', (data = new OctoFilter(this, options))
+        $this.data 'octofilter', (data = new OctoFilter(this, options))
       if typeof options == 'string'
         data[options].apply(data, args)
 

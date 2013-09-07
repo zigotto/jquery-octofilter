@@ -24,32 +24,32 @@
 
     OctoFilter.prototype.inputContainer = null;
 
-    OctoFilter.prototype.filterContainer = null;
+    OctoFilter.prototype.filtersContainer = null;
 
     OctoFilter.prototype.init = function() {
       var self;
       self = this;
       this.inputContainer = $('<div/>', {
-        "class": 'filter-input'
+        "class": 'octofilter-input'
       }).insertAfter(this.input);
       this.inputContainer.html(this.input);
       this.search('', function() {
-        self.filterContainer.on('click', '.filter-link', function(event) {
+        self.filtersContainer.on('click', '.octofilter-link', function(event) {
           event.preventDefault();
           event.stopPropagation();
           return self.select($(this).data('value'));
         });
-        self.inputContainer.on('click', '.filter-clear', function(event) {
+        self.inputContainer.on('click', '.octofilter-clear', function(event) {
           event.preventDefault();
           event.stopPropagation();
-          return self.clear($(this).closest('.filter-label').data('value'));
+          return self.clear($(this).closest('.octofilter-label').data('value'));
         });
         return $(document).on('click', function(event) {
           var parents, target;
           target = $(event.target);
           parents = target.parents().add(target);
-          if (parents.index(self.inputContainer) === -1 && parents.index(self.filterContainer) === -1) {
-            return self.filterContainer.hide();
+          if (parents.index(self.inputContainer) === -1 && parents.index(self.filtersContainer) === -1) {
+            return self.filtersContainer.hide();
           }
         });
       });
@@ -57,19 +57,19 @@
         return self.input.focus();
       });
       return this.input.on('focus', function() {
-        return self.filterContainer.show();
+        return self.filtersContainer.show();
       }).on('keydown', function() {
         switch (event.keyCode || event.which) {
           case 9:
             return false;
           case 8:
             if (!this.value.length) {
-              return self.clear(self.inputContainer.find('.filter-label:last').data('value'));
+              return self.clear(self.inputContainer.find('.octofilter-label:last').data('value'));
             }
             break;
           case 27:
             self.input.val('').blur();
-            return self.filterContainer.hide();
+            return self.filtersContainer.hide();
         }
       }).on('keyup', function(event) {
         var filter;
@@ -77,7 +77,7 @@
           case 9:
           case 13:
             event.preventDefault();
-            filter = self.filterContainer.find('.filter-link.filter-active:first');
+            filter = self.filtersContainer.find('.octofilter-link.octofilter-active:first');
             if (filter.length) {
               return self.select(filter.data('value'));
             }
@@ -93,76 +93,86 @@
     };
 
     OctoFilter.prototype.makeFilterContainer = function() {
-      var category, categoryLabel, containerNav, _ref;
-      this.filterContainer = $('\
-      <div class="filter-container">\
+      var category, categoryLabel, containerNav;
+      if (!this.filtersContainer) {
+        this.filtersContainer = $('\
+      <div class="octofilter-container">\
         <ul class="nav nav-tabs"></ul>\
         <div class="tab-content"></div>\
       </div>\
     ').insertAfter(this.input);
-      containerNav = [];
-      _ref = this.options.categories;
-      for (category in _ref) {
-        categoryLabel = _ref[category];
-        containerNav.push($('<li/>').html($('<a/>', {
-          href: "#filter-" + category,
-          text: categoryLabel,
-          "class": "nav-" + category,
-          'data-toggle': 'tab'
-        })));
       }
-      return this.filterContainer.find('.nav').html(containerNav).find('li:first').addClass('active');
+      containerNav = (function() {
+        var _ref, _results;
+        _ref = this.options.categories;
+        _results = [];
+        for (category in _ref) {
+          categoryLabel = _ref[category];
+          _results.push($('<li/>').html($('<a/>', {
+            href: "#octofilter-" + category,
+            text: categoryLabel,
+            "class": "nav-" + category,
+            'data-toggle': 'tab'
+          })));
+        }
+        return _results;
+      }).call(this);
+      return this.filtersContainer.find('.nav').html(containerNav).find('li:first').addClass('active');
     };
 
     OctoFilter.prototype.populateFilterContainer = function(data) {
-      var category, categoryLabel, containerContent, content, firstFilter, item, klass, self, tabActive, _i, _len, _ref, _ref1;
+      var category, categoryLabel, containerContent, content, firstFilter, item, klass, self, tabActive;
       self = this;
-      containerContent = [];
       if ($.isEmptyObject(this.options.categories)) {
         $.each(data, function(key, value) {
           return self.options.categories[key] = key;
         });
         this.makeFilterContainer();
       }
-      _ref = this.options.categories;
-      for (category in _ref) {
-        categoryLabel = _ref[category];
-        content = [];
-        if (typeof data[category] === 'string') {
-          data[category] = $.parseJSON(data[category]);
-        }
-        if (data[category].length) {
-          _ref1 = data[category];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            item = _ref1[_i];
-            klass = 'filter-link';
-            if ($.inArray(item.value || item.name, this.selectedFilters[category]) !== -1) {
-              klass += ' filtered';
+      containerContent = (function() {
+        var _i, _len, _ref, _ref1, _results;
+        _ref = this.options.categories;
+        _results = [];
+        for (category in _ref) {
+          categoryLabel = _ref[category];
+          content = [];
+          if (typeof data[category] === 'string') {
+            data[category] = $.parseJSON(data[category]);
+          }
+          if (data[category].length) {
+            _ref1 = data[category];
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              item = _ref1[_i];
+              klass = 'octofilter-link';
+              if ($.inArray(item.value || item.name, this.selectedFilters[category]) !== -1) {
+                klass += ' octofiltered';
+              }
+              content.push($('<a/>', {
+                text: item.name,
+                "class": klass,
+                'data-category': category,
+                'data-value': item.value || item.name
+              }));
             }
-            content.push($('<a/>', {
-              text: item.name,
-              "class": klass,
-              'data-category': category,
-              'data-value': item.value || item.name
+          } else {
+            content.push($('<span/>', {
+              text: "" + (this.options.categories[category].toLowerCase()) + " not found.",
+              "class": "octofilter-not-found"
             }));
           }
-        } else {
-          content.push($('<span/>', {
-            text: "Nenhum " + (this.options.categories[category].toLowerCase()) + " encontrado.",
-            "class": "filter-not-found"
-          }));
+          _results.push($('<div/>', {
+            id: "octofilter-" + category,
+            "class": 'tab-pane'
+          }).html(content));
         }
-        containerContent.push($('<div/>', {
-          id: "filter-" + category,
-          "class": 'tab-pane'
-        }).html(content));
-      }
-      this.filterContainer.find('.tab-content').html(containerContent);
-      firstFilter = this.filterContainer.find('.filter-link:not(.filtered):first');
-      tabActive = firstFilter.length ? firstFilter.closest('.tab-pane').addClass('active') : this.filterContainer.find('.tab-pane:first').addClass('active');
-      this.filterContainer.find("[href='#" + (tabActive.attr('id')) + "']").tab('show');
+        return _results;
+      }).call(this);
+      this.filtersContainer.find('.tab-content').html(containerContent);
+      firstFilter = this.filtersContainer.find('.octofilter-link:not(.octofiltered):first');
+      tabActive = firstFilter.length ? firstFilter.closest('.tab-pane').addClass('active') : this.filtersContainer.find('.tab-pane:first').addClass('active');
+      this.filtersContainer.find("[href='#" + (tabActive.attr('id')) + "']").tab('show');
       if (this.input.val().length >= this.options.minChars) {
-        return firstFilter.addClass('filter-active');
+        return firstFilter.addClass('octofilter-active');
       }
     };
 
@@ -182,7 +192,7 @@
         params[this.options.paramName] = query;
         return $.getJSON(this.options.url, params, function(data) {
           self.cacheData[query] = data;
-          if (!self.filterContainer) {
+          if (!self.filtersContainer) {
             self.makeFilterContainer();
           }
           self.populateFilterContainer(data);
@@ -198,7 +208,7 @@
 
     OctoFilter.prototype.select = function(value) {
       var category, filter, filterLabel, filtersLabels, _base;
-      filter = this.filterContainer.find(".filter-link[data-value='" + value + "']");
+      filter = this.filtersContainer.find(".octofilter-link[data-value='" + value + "']");
       category = filter.data('category');
       if ($.inArray(value, this.selectedFilters[category]) !== -1) {
         this.input.focus();
@@ -209,16 +219,16 @@
       }
       this.selectedFilters[category].push(value);
       filterLabel = $('<span/>', {
-        "class": 'filter-label',
+        "class": 'octofilter-label',
         text: filter.text(),
         'data-value': value,
         'data-category': category
       });
       $('<a/>', {
-        "class": 'filter-clear',
+        "class": 'octofilter-clear',
         html: '&times;'
       }).appendTo(filterLabel);
-      filtersLabels = this.inputContainer.find('.filter-label');
+      filtersLabels = this.inputContainer.find('.octofilter-label');
       if (filtersLabels.length) {
         filtersLabels.last().after(filterLabel);
       } else {
@@ -234,11 +244,11 @@
     OctoFilter.prototype.clear = function(value) {
       var category, filterLabel;
       if (!value) {
-        this.inputContainer.find(".filter-label").remove();
+        this.inputContainer.find(".octofilter-label").remove();
         this.selectedFilters = {};
         this.input.val('');
       } else {
-        filterLabel = this.inputContainer.find(".filter-label[data-value='" + value + "']").remove();
+        filterLabel = this.inputContainer.find(".octofilter-label[data-value='" + value + "']").remove();
         category = filterLabel.data('category');
         this.selectedFilters[category].splice(this.selectedFilters[category].indexOf(value), 1);
       }
@@ -260,9 +270,9 @@
       return this.each(function() {
         var $this, data;
         $this = $(this);
-        data = $this.data('categoryFilter');
+        data = $this.data('octofilter');
         if (!data) {
-          $this.data('categoryFilter', (data = new OctoFilter(this, options)));
+          $this.data('octofilter', (data = new OctoFilter(this, options)));
         }
         if (typeof options === 'string') {
           return data[options].apply(data, args);
