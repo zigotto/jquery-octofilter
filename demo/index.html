@@ -29,7 +29,21 @@
 
   <script>
     $('#input').octofilter({
-      url: 'data.json'
+      source: {
+        country: [
+          { name: 'Brazil' },
+          { name: 'United States' },
+          { name: 'Japan' }
+        ],
+        filter: [
+          { name: 'Published' },
+          { name: 'Unpublished' }
+        ],
+        status: [
+          { name: 'Active' },
+          { name: 'Inactive' }
+        ]
+      }
     });
   </script>
 

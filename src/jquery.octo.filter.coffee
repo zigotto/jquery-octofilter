@@ -2,7 +2,7 @@ $ = jQuery
 
 class OctoFilter
   defaults:
-    url: {}
+    source: {}
     categories: {}
     paramName: 'query'
     minChars: 3
@@ -110,8 +110,8 @@ class OctoFilter
 
       filters = if data[category].length
         for item in data[category]
-          klass = ['octofilter-link']
-          klass.push 'octofiltered' if $.inArray(item.value or item.name, @selectedFilters[category]) != -1
+          klass = 'octofilter-link'
+          klass += ' octofiltered' if $.inArray(item.value or item.name, @selectedFilters[category]) != -1
           $('<a/>', { text: item.name, class: klass, 'data-category': category, 'data-value': item.value or item.name })
       else
         $('<span/>', { text: "#{@options.categories[category].toLowerCase()} not found.", class: "octofilter-not-found" })
@@ -141,18 +141,26 @@ class OctoFilter
       callback.call() if typeof callback == 'function'
       @options.onSearch.apply(@, [@cacheData[query]]) if typeof @options.onSearch == 'function'
     else
-      params = {}
-      params[@options.paramName] = query
+      if typeof @options.source is 'string'
+        params = {}
+        params[@options.paramName] = query
 
-      $.getJSON @options.url, params, (data) ->
-        self.cacheData[query] = data # Stores the query in cache
+        $.getJSON @options.source, params, (data) ->
+          self.cacheData[query] = data # Stores the query in cache
 
-        self.makeFilterContainer() unless self.filtersContainer
-        self.populateFilterContainer(data)
+          self.makeFilterContainer() unless self.filtersContainer?
+          self.populateFilterContainer(data)
+
+          # Callbacks
+          callback.call() if typeof callback == 'function'
+          self.options.onSearch.apply(self, [data]) if typeof self.options.onSearch == 'function'
+      else
+        @makeFilterContainer() unless @filtersContainer?
+        @populateFilterContainer(@options.source)
 
         # Callbacks
         callback.call() if typeof callback == 'function'
-        self.options.onSearch.apply(self, [data]) if typeof self.options.onSearch == 'function'
+        @options.onSearch.apply(self, [@options.source]) if typeof @options.onSearch == 'function'
 
   select: (value) ->
     filter = @filtersContainer.find(".octofilter-link[data-value='#{value}']")

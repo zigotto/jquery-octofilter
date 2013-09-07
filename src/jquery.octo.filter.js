@@ -6,7 +6,7 @@
 
   OctoFilter = (function() {
     OctoFilter.prototype.defaults = {
-      url: {},
+      source: {},
       categories: {},
       paramName: 'query',
       minChars: 3
@@ -150,9 +150,9 @@
               _results1 = [];
               for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
                 item = _ref1[_i];
-                klass = ['octofilter-link'];
+                klass = 'octofilter-link';
                 if ($.inArray(item.value || item.name, this.selectedFilters[category]) !== -1) {
-                  klass.push('octofiltered');
+                  klass += ' octofiltered';
                 }
                 _results1.push($('<a/>', {
                   text: item.name,
@@ -197,21 +197,34 @@
           return this.options.onSearch.apply(this, [this.cacheData[query]]);
         }
       } else {
-        params = {};
-        params[this.options.paramName] = query;
-        return $.getJSON(this.options.url, params, function(data) {
-          self.cacheData[query] = data;
-          if (!self.filtersContainer) {
-            self.makeFilterContainer();
+        if (typeof this.options.source === 'string') {
+          params = {};
+          params[this.options.paramName] = query;
+          return $.getJSON(this.options.source, params, function(data) {
+            self.cacheData[query] = data;
+            if (self.filtersContainer == null) {
+              self.makeFilterContainer();
+            }
+            self.populateFilterContainer(data);
+            if (typeof callback === 'function') {
+              callback.call();
+            }
+            if (typeof self.options.onSearch === 'function') {
+              return self.options.onSearch.apply(self, [data]);
+            }
+          });
+        } else {
+          if (this.filtersContainer == null) {
+            this.makeFilterContainer();
           }
-          self.populateFilterContainer(data);
+          this.populateFilterContainer(this.options.source);
           if (typeof callback === 'function') {
             callback.call();
           }
-          if (typeof self.options.onSearch === 'function') {
-            return self.options.onSearch.apply(self, [data]);
+          if (typeof this.options.onSearch === 'function') {
+            return this.options.onSearch.apply(self, [this.options.source]);
           }
-        });
+        }
       }
     };
 
