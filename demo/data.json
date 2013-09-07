@@ -6,6 +6,7 @@
   ],
   "filter": [
     { "name": "Published" },
-    { "name": "Unublished" }
-  ]
+    { "name": "Unpublished" }
+  ],
+  "status": []
 }

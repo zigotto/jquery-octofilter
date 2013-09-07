@@ -121,7 +121,7 @@
     };
 
     OctoFilter.prototype.populateFilterContainer = function(data) {
-      var category, categoryLabel, containerContent, content, firstFilter, item, klass, self, tabActive;
+      var category, categoryLabel, containerContent, filters, firstFilter, item, klass, self, tabActive;
       self = this;
       if ($.isEmptyObject(this.options.categories)) {
         $.each(data, function(key, value) {
@@ -130,40 +130,49 @@
         this.makeFilterContainer();
       }
       containerContent = (function() {
-        var _i, _len, _ref, _ref1, _results;
+        var _ref, _results;
         _ref = this.options.categories;
         _results = [];
         for (category in _ref) {
           categoryLabel = _ref[category];
-          content = [];
           if (typeof data[category] === 'string') {
             data[category] = $.parseJSON(data[category]);
           }
-          if (data[category].length) {
-            _ref1 = data[category];
-            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-              item = _ref1[_i];
-              klass = 'octofilter-link';
-              if ($.inArray(item.value || item.name, this.selectedFilters[category]) !== -1) {
-                klass += ' octofiltered';
-              }
-              content.push($('<a/>', {
-                text: item.name,
-                "class": klass,
-                'data-category': category,
-                'data-value': item.value || item.name
-              }));
-            }
-          } else {
-            content.push($('<span/>', {
-              text: "" + (this.options.categories[category].toLowerCase()) + " not found.",
-              "class": "octofilter-not-found"
-            }));
+          if (self.input.val().length >= self.options.minChars) {
+            data[category] = $.grep(data[category], function(category) {
+              return category.name.toLowerCase().indexOf(self.input.val().toLowerCase()) !== -1;
+            });
           }
+          filters = (function() {
+            var _i, _len, _ref1, _results1;
+            if (data[category].length) {
+              _ref1 = data[category];
+              _results1 = [];
+              for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+                item = _ref1[_i];
+                klass = ['octofilter-link'];
+                if ($.inArray(item.value || item.name, this.selectedFilters[category]) !== -1) {
+                  klass.push('octofiltered');
+                }
+                _results1.push($('<a/>', {
+                  text: item.name,
+                  "class": klass,
+                  'data-category': category,
+                  'data-value': item.value || item.name
+                }));
+              }
+              return _results1;
+            } else {
+              return $('<span/>', {
+                text: "" + (this.options.categories[category].toLowerCase()) + " not found.",
+                "class": "octofilter-not-found"
+              });
+            }
+          }).call(this);
           _results.push($('<div/>', {
             id: "octofilter-" + category,
             "class": 'tab-pane'
-          }).html(content));
+          }).html(filters));
         }
         return _results;
       }).call(this);

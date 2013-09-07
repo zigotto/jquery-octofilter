@@ -105,22 +105,27 @@ class OctoFilter
     self = @
 
     if $.isEmptyObject(@options.categories)
-      $.each data, (key, value) -> self.options.categories[key] = key
+      $.each data, (key, value) ->
+        self.options.categories[key] = key
       @makeFilterContainer()
 
     containerContent = for category, categoryLabel of @options.categories
-      content = []
       data[category] = $.parseJSON(data[category]) if typeof data[category] == 'string'
 
-      if data[category].length
-        for item in data[category]
-          klass = 'octofilter-link'
-          klass += ' octofiltered' if $.inArray(item.value or item.name, @selectedFilters[category]) != -1
-          content.push $('<a/>', { text: item.name, class: klass, 'data-category': category, 'data-value': item.value or item.name })
-      else
-        content.push $('<span/>', { text: "#{@options.categories[category].toLowerCase()} not found.", class: "octofilter-not-found" })
+      # Performs the search and returns the values found
+      if self.input.val().length >= self.options.minChars
+        data[category] = $.grep data[category], (category) ->
+          category.name.toLowerCase().indexOf(self.input.val().toLowerCase()) != -1
 
-      $('<div/>', { id: "octofilter-#{category}", class: 'tab-pane' }).html(content)
+      filters = if data[category].length
+        for item in data[category]
+          klass = ['octofilter-link']
+          klass.push 'octofiltered' if $.inArray(item.value or item.name, @selectedFilters[category]) != -1
+          $('<a/>', { text: item.name, class: klass, 'data-category': category, 'data-value': item.value or item.name })
+      else
+        $('<span/>', { text: "#{@options.categories[category].toLowerCase()} not found.", class: "octofilter-not-found" })
+
+      $('<div/>', { id: "octofilter-#{category}", class: 'tab-pane' }).html(filters)
 
     @filtersContainer.find('.tab-content').html(containerContent)
 
