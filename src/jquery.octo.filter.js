@@ -29,10 +29,10 @@
     OctoFilter.prototype.init = function() {
       var self;
       self = this;
-      this.inputContainer = $('<div/>', {
-        "class": 'octofilter-input'
-      }).insertAfter(this.input);
-      this.inputContainer.html(this.input);
+      this.input.attr({
+        autocomplete: 'off'
+      });
+      this.inputContainer = this.input.wrap('<div class="octofilter-input" />').parent();
       this.search('', function() {
         self.filtersContainer.on('click', '.octofilter-link', function(event) {
           event.preventDefault();
@@ -58,10 +58,11 @@
       });
       return this.input.on('focus', function() {
         return self.filtersContainer.show();
-      }).on('keydown', function() {
+      }).on('keydown', function(event) {
         switch (event.keyCode || event.which) {
           case 9:
-            return false;
+          case 13:
+            return event.preventDefault();
           case 8:
             if (!this.value.length) {
               return self.clear(self.inputContainer.find('.octofilter-label:last').data('value'));
@@ -76,7 +77,6 @@
         switch (event.keyCode || event.which) {
           case 9:
           case 13:
-            event.preventDefault();
             filter = self.filtersContainer.find('.octofilter-link.octofilter-active:first');
             if (filter.length) {
               return self.select(filter.data('value'));
@@ -221,7 +221,7 @@
       category = filter.data('category');
       if ($.inArray(value, this.selectedFilters[category]) !== -1) {
         this.input.focus();
-        return false;
+        return;
       }
       if ((_base = this.selectedFilters)[category] == null) {
         _base[category] = [];
