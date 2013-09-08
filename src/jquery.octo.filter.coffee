@@ -95,6 +95,8 @@ class OctoFilter
   populateFilterContainer: (data) ->
     self = @
 
+    data = $.extend({}, data) # Cloning the data
+
     if $.isEmptyObject(@options.categories)
       $.each data, (key, value) ->
         self.options.categories[key] = key

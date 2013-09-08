@@ -123,6 +123,7 @@
     OctoFilter.prototype.populateFilterContainer = function(data) {
       var category, categoryLabel, containerContent, filters, firstFilter, item, klass, self, tabActive;
       self = this;
+      data = $.extend({}, data);
       if ($.isEmptyObject(this.options.categories)) {
         $.each(data, function(key, value) {
           return self.options.categories[key] = key;
