@@ -78,12 +78,12 @@ class Octofilter
               self.search ''
 
   makeFilterContainer: ->
-    @filtersContainer = $('
-      <div class="octofilter-container">
-        <ul class="nav nav-tabs"></ul>
-        <div class="tab-content"></div>
-      </div>
-    ').insertAfter(@input) unless @filtersContainer
+    @filtersContainer = $(
+      '<div class="octofilter-container">' +
+        '<ul class="nav nav-tabs"></ul>' +
+        '<div class="tab-content"></div>' +
+      '</div>'
+    ).insertAfter(@input) unless @filtersContainer
 
     containerNav = for category, categoryLabel of @options.categories
       $('<li/>').html $('<a/>', { href: "#octofilter-#{category}", text: categoryLabel, class: "nav-#{category}", 'data-toggle': 'tab' })

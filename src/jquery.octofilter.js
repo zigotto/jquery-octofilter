@@ -95,12 +95,7 @@
     Octofilter.prototype.makeFilterContainer = function() {
       var category, categoryLabel, containerNav;
       if (!this.filtersContainer) {
-        this.filtersContainer = $('\
-      <div class="octofilter-container">\
-        <ul class="nav nav-tabs"></ul>\
-        <div class="tab-content"></div>\
-      </div>\
-    ').insertAfter(this.input);
+        this.filtersContainer = $('<div class="octofilter-container">' + '<ul class="nav nav-tabs"></ul>' + '<div class="tab-content"></div>' + '</div>').insertAfter(this.input);
       }
       containerNav = (function() {
         var _ref, _results;
