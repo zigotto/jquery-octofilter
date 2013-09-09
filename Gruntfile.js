@@ -33,7 +33,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: '<%= concat.dist.dest %>',
-        dest: 'dist/jquery.<%= pkg.name %>.min.js'
+        dest: 'dist/<%= pkg.name %>.min.js'
       }
     },
     qunit: {
@@ -96,14 +96,14 @@ module.exports = function (grunt) {
     coffee: {
       compile: {
         files: {
-          'src/jquery.octo.filter.js': 'src/jquery.octo.filter.coffee'
+          'src/jquery.octofilter.js': 'src/jquery.octofilter.coffee'
         }
       }
     },
     sass: {
       dist: {
         files: {
-          'assets/css/jquery.octo.filter.css': 'assets/sass/jquery.octo.filter.sass'
+          'assets/css/jquery.octofilter.css': 'assets/sass/jquery.octofilter.sass'
         }
       }
     },

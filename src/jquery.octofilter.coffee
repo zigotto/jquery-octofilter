@@ -1,6 +1,6 @@
 $ = jQuery
 
-class OctoFilter
+class Octofilter
   defaults:
     source: {}
     categories: {}
@@ -215,7 +215,6 @@ $.fn.extend
       data = $this.data('octofilter')
 
       if !data
-        $this.data 'octofilter', (data = new OctoFilter(this, options))
+        $this.data 'octofilter', (data = new Octofilter(this, options))
       if typeof options == 'string'
         data[options].apply(data, args)
-

@@ -1,28 +1,45 @@
-# jQuery Octo Filter
+# jQuery Octofilter
 
-A jQuery autocomplete categorized plugin
+A jQuery plugin to categorized suggestions.
 
-## Getting Started
+## Usage
 
-In your web page:
+Include jQuery and Bootstrap Tabs:
 
 ```html
 <script src="jquery.js"></script>
-<script src="dist/jquery-octo-filter.min.js"></script>
-<script>
-  jQuery(function($) {
-    $('input').octofilter({
-      url: 'data.jon'
-    });
-  });
-</script>
+<script src="bootstrap-tab.js"></script>
 ```
 
-## Documentation
-_(Coming soon)_
+Include plugin's CSS and JS:
+
+```html
+<link rel="stylesheet" href="assets/jquery.octofilter.css">
+<script src="src/jquery.octofilter.js"></script>
+```
+
+Call the plugin:
+
+```javascript
+$('input').octofilter({
+  source: {
+    category_name: [{ name: 'Value' }]
+  }
+});
+```
 
 ## Examples
-_(Coming soon)_
+[Check out for example's source code here](https://github.com/zigotto/jquery-octofilter/blob/master/demo/index.html)
 
-## Release History
-_(Nothing yet)_
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
+
+That's it! Enjoy!
+
+## Licence
+MIT License. Copyright 2013 Zigotto® - http://www.zigotto.com

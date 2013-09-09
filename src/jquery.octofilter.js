@@ -1,32 +1,32 @@
 (function() {
-  var $, OctoFilter,
+  var $, Octofilter,
     __slice = [].slice;
 
   $ = jQuery;
 
-  OctoFilter = (function() {
-    OctoFilter.prototype.defaults = {
+  Octofilter = (function() {
+    Octofilter.prototype.defaults = {
       source: {},
       categories: {},
       paramName: 'query',
       minChars: 3
     };
 
-    function OctoFilter(input, options) {
+    function Octofilter(input, options) {
       this.options = $.extend({}, this.defaults, options);
       this.input = $(input);
       this.init();
     }
 
-    OctoFilter.prototype.cacheData = {};
+    Octofilter.prototype.cacheData = {};
 
-    OctoFilter.prototype.selectedFilters = {};
+    Octofilter.prototype.selectedFilters = {};
 
-    OctoFilter.prototype.inputContainer = null;
+    Octofilter.prototype.inputContainer = null;
 
-    OctoFilter.prototype.filtersContainer = null;
+    Octofilter.prototype.filtersContainer = null;
 
-    OctoFilter.prototype.init = function() {
+    Octofilter.prototype.init = function() {
       var self;
       self = this;
       this.input.attr({
@@ -92,7 +92,7 @@
       });
     };
 
-    OctoFilter.prototype.makeFilterContainer = function() {
+    Octofilter.prototype.makeFilterContainer = function() {
       var category, categoryLabel, containerNav;
       if (!this.filtersContainer) {
         this.filtersContainer = $('\
@@ -120,7 +120,7 @@
       return this.filtersContainer.find('.nav').html(containerNav).find('li:first').addClass('active');
     };
 
-    OctoFilter.prototype.populateFilterContainer = function(data) {
+    Octofilter.prototype.populateFilterContainer = function(data) {
       var category, categoryLabel, containerContent, filters, firstFilter, item, klass, self, tabActive;
       self = this;
       data = $.extend({}, data);
@@ -186,7 +186,7 @@
       }
     };
 
-    OctoFilter.prototype.search = function(query, callback) {
+    Octofilter.prototype.search = function(query, callback) {
       var params, self;
       self = this;
       if (this.cacheData[query]) {
@@ -229,7 +229,7 @@
       }
     };
 
-    OctoFilter.prototype.select = function(value) {
+    Octofilter.prototype.select = function(value) {
       var category, filter, filterLabel, filtersLabels, _base;
       filter = this.filtersContainer.find(".octofilter-link[data-value='" + value + "']");
       category = filter.data('category');
@@ -264,7 +264,7 @@
       }
     };
 
-    OctoFilter.prototype.clear = function(value) {
+    Octofilter.prototype.clear = function(value) {
       var category, filterLabel;
       if (!value) {
         this.inputContainer.find(".octofilter-label").remove();
@@ -282,7 +282,7 @@
       }
     };
 
-    return OctoFilter;
+    return Octofilter;
 
   })();
 
@@ -295,7 +295,7 @@
         $this = $(this);
         data = $this.data('octofilter');
         if (!data) {
-          $this.data('octofilter', (data = new OctoFilter(this, options)));
+          $this.data('octofilter', (data = new Octofilter(this, options)));
         }
         if (typeof options === 'string') {
           return data[options].apply(data, args);
