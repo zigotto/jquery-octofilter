@@ -8,11 +8,14 @@ module.exports = function (grunt) {
   grunt.initConfig({
     // Metadata.
     pkg: grunt.file.readJSON('package.json'),
-    banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
-      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      ' Licensed MIT */\n',
+    banner: '/*\n' +
+				' *  <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n' +
+				' *  <%= pkg.description %>\n' +
+				' *  <%= pkg.homepage %>\n' +
+				' *\n' +
+				' *  Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
+				' *  MIT License\n' +
+				' */\n',
     // Task configuration.
     clean: {
       files: ['dist']
@@ -24,7 +27,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: ['src/<%= pkg.name %>.js'],
-        dest: 'dist/jquery.<%= pkg.name %>.js'
+        dest: 'dist/<%= pkg.name %>.js'
       }
     },
     uglify: {
@@ -130,7 +133,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'concat', 'uglify', 'compass']);
+  grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'concat', 'uglify']);
+  grunt.registerTask('build', ['clean', 'compass', 'coffee', 'concat', 'uglify'])
   grunt.registerTask('server', ['connect', 'watch']);
   grunt.registerTask('test', ['jshint', 'connect', 'qunit']);
 };
