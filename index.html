@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+
+  <meta charset="UTF-8">
+  <title>jQuery Octofilter</title>
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/jquery.octofilter.css">
+
+</head>
+<body>
+
+  <div class="container">
+    <h1>jQuery Octofilter</h1>
+    <p>A jQuery plugin to categorized suggestions..<br>For more informations, visit our <a href="https://github.com/zigotto/jquery-octo-filter">repository</a>.</p>
+
+    <form action="/">
+      <input type="text" id="input" placeholder="Type to search...">
+    </form>
+  </div>
+
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.octofilter.js"></script>
+
+  <script>
+    $('#input').octofilter({
+      source: {
+        country: [
+          { name: 'Brazil' },
+          { name: 'United States' },
+          { name: 'Japan' }
+        ],
+        filter: [
+          { name: 'Published' },
+          { name: 'Unpublished' }
+        ],
+        status: [
+          { name: 'Active' },
+          { name: 'Inactive' }
+        ]
+      }
+    });
+  </script>
+
+</body>
+</html>
