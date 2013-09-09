@@ -134,7 +134,7 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'concat', 'uglify']);
-  grunt.registerTask('build', ['clean', 'compass', 'coffee', 'concat', 'uglify'])
+  grunt.registerTask('build', ['clean', 'compass', 'coffee', 'concat', 'uglify']);
   grunt.registerTask('server', ['connect', 'watch']);
   grunt.registerTask('test', ['jshint', 'connect', 'qunit']);
 };
