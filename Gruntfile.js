@@ -67,10 +67,6 @@ module.exports = function (grunt) {
       }
     },
     watch: {
-      coffee: {
-        files: ['src/{,*/}*.coffee'],
-        tasks: ['coffee']
-      },
       compass: {
         files: ['assets/{,*/}*.{scss,sass}', 'demo/css/{,*/}*.{scss,sass}'],
         tasks: ['compass']
@@ -93,13 +89,6 @@ module.exports = function (grunt) {
         options: {
           hostname: '*',
           port: 9000
-        }
-      }
-    },
-    coffee: {
-      compile: {
-        files: {
-          'src/jquery.octofilter.js': 'src/jquery.octofilter.coffee'
         }
       }
     },
@@ -128,13 +117,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-contrib-coffee');
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-compass');
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'qunit', 'clean', 'concat', 'uglify']);
-  grunt.registerTask('build', ['clean', 'compass', 'coffee', 'concat', 'uglify']);
+  grunt.registerTask('build', ['clean', 'compass', 'concat', 'uglify']);
   grunt.registerTask('server', ['connect', 'watch']);
   grunt.registerTask('test', ['jshint', 'connect', 'qunit']);
 };

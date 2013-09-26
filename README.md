@@ -23,7 +23,7 @@ Call the plugin:
 ```javascript
 $('input').octofilter({
   source: {
-    category_name: [{ name: 'Value' }]
+    category_name: ['Value1', 'Value2']
   }
 });
 ```
